@@ -1,4 +1,4 @@
-name: Deploy to FTP
+name: Deploy via SFTP
 
 # Runs on every push to main, and can also be triggered manually
 # from the repo's "Actions" tab (Run workflow).
@@ -14,24 +14,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to FTP server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy to server over SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # FTPS is secure (encrypts the connection). If your host only
-          # supports plain FTP, change the next line to: protocol: ftp
-          protocol: ftps
+          port: 22
+          # Upload everything in the repo EXCEPT hidden files/folders.
+          # The ./* glob skips dotfiles, so .git, .github, .claude and
+          # .gitignore are never uploaded to the server.
+          local_path: './*'
           # The folder on your server that maps to /masterclass/
-          # (set via the FTP_SERVER_DIR secret, must end with a slash).
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          # Files in the repo that should NOT be uploaded to the server.
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/.github/**
-            **/.claude/**
-            .gitignore
-            CHANGELOG.md
-            README.md
+          # (set via the FTP_SERVER_DIR secret, ends with a slash).
+          remote_path: ${{ secrets.FTP_SERVER_DIR }}
+          # Leave existing server files alone if they aren't in the repo.
+          delete_remote_files: false
