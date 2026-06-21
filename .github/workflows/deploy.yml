@@ -21,6 +21,9 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
+          # Host is SFTP-only (no shell access), so use SFTP commands only
+          # and never try to run shell commands like mkdir over SSH.
+          sftp_only: true
           # Upload everything in the repo EXCEPT hidden files/folders.
           # The ./* glob skips dotfiles, so .git, .github, .claude and
           # .gitignore are never uploaded to the server.
