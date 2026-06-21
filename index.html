@@ -1,0 +1,1506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Digital CX Masterclass · New Cohort</title>
+<meta name="description" content="The 6-week cohort program that turns CS and CX professionals into the digital leaders their organizations can't afford to lose. New cohort begins soon." />
+<link rel="stylesheet" href="assets/dcx.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: var(--dcx-cream); font-family: var(--font-body); color: var(--dcx-ink); }
+  * { box-sizing: border-box; }
+  button { font-family: var(--font-body); }
+  html { scroll-behavior: smooth; }
+  a { color: inherit; }
+  em { font-style: italic; }
+
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .grid-3 { grid-template-columns: 1fr !important; }
+    .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+    .nav-links { display: none !important; }
+    .hero-title { font-size: clamp(36px, 9vw, 56px) !important; }
+    .section-title { font-size: 32px !important; }
+    .price-row { flex-direction: column !important; gap: 16px !important; }
+    .price-arrow { transform: rotate(90deg); }
+    .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .director-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .guarantee-grid { grid-template-columns: 1fr !important; gap: 24px !important; justify-items: center; text-align: center; }
+    .about-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .credentials-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .recap-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+    .recap-grid > div { border-left: none !important; border-top: 1px solid rgba(255,255,255,.12); padding-top: 16px; }
+    .recap-grid > div:first-child { border-top: none; padding-top: 0; }
+    .padded-section { padding-left: 20px !important; padding-right: 20px !important; }
+    .pad-card { padding: 32px 24px !important; }
+  }
+  @media (max-width: 600px) {
+    .hero-pad { padding: 80px 20px 64px !important; }
+    .stat-grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useEffect, Fragment } = React;
+
+/* ----------------------------------------------------------------- ATOMS */
+
+function Button({ variant = "primary-orange", size = "md", children, onClick, style, fullWidth }) {
+  const [hover, setHover] = useState(false);
+  const [press, setPress] = useState(false);
+  const base = {
+    fontFamily: "var(--font-body)",
+    fontWeight: 600,
+    fontSize: size === "xl" ? 17 : size === "lg" ? 16 : 14,
+    padding: size === "xl" ? "18px 32px" : size === "lg" ? "14px 26px" : "10px 20px",
+    borderRadius: 10,
+    border: "1.5px solid transparent",
+    cursor: "pointer",
+    transition: "all 200ms cubic-bezier(.2,.8,.2,1)",
+    transform: press ? "scale(.98)" : "scale(1)",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    width: fullWidth ? "100%" : "auto",
+    letterSpacing: "-0.005em",
+    ...style,
+  };
+  const variants = {
+    "primary-orange": {
+      background: hover ? "#D24F12" : "#FD6827",
+      color: "#fff",
+      boxShadow: hover ? "0 12px 32px rgba(253,104,39,.34)" : "0 6px 16px rgba(253,104,39,.18)",
+    },
+    "primary-green": {
+      background: hover ? "#22454A" : "#2F5C61",
+      color: "#fff",
+      boxShadow: hover ? "0 12px 32px rgba(47,92,97,.30)" : "0 6px 16px rgba(47,92,97,.16)",
+    },
+    "secondary-light": {
+      background: hover ? "rgba(255,255,255,.10)" : "transparent",
+      color: "#fff",
+      borderColor: "rgba(255,255,255,.4)",
+    },
+  };
+  return (
+    <button
+      style={{ ...base, ...variants[variant] }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => { setHover(false); setPress(false); }}
+      onMouseDown={() => setPress(true)}
+      onMouseUp={() => setPress(false)}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+function HeroVideo() {
+  // Paste your YouTube video ID below (the part after "v=" in a YouTube URL).
+  const YOUTUBE_ID = "D1QBEnnJd0I";
+
+  const [playing, setPlaying] = useState(false);
+  const [hover, setHover] = useState(false);
+
+  const frame = {
+    position: "relative",
+    width: "100%",
+    maxWidth: 880,
+    margin: "44px auto 0",
+    aspectRatio: "16 / 9",
+    borderRadius: 16,
+    overflow: "hidden",
+    border: "1px solid rgba(255,255,255,.12)",
+    boxShadow: "0 30px 60px -20px rgba(0,0,0,.45)",
+    background: "#1a3438",
+  };
+
+  if (playing) {
+    return (
+      <div style={frame}>
+        <iframe
+          src={`https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&rel=0`}
+          title="Digital CX Masterclass intro"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label="Play intro video"
+      onClick={() => setPlaying(true)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        ...frame,
+        padding: 0,
+        cursor: "pointer",
+        display: "block",
+        backgroundImage: `url(https://img.youtube.com/vi/${YOUTUBE_ID}/hqdefault.jpg)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <span style={{
+        position: "absolute", inset: 0,
+        background: hover
+          ? "linear-gradient(180deg, rgba(0,0,0,.15) 0%, rgba(0,0,0,.45) 100%)"
+          : "linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.35) 100%)",
+        transition: "background .2s ease",
+      }} />
+      <span style={{
+        position: "absolute", top: "50%", left: "50%",
+        transform: `translate(-50%, -50%) scale(${hover ? 1.05 : 1})`,
+        width: 80, height: 80, borderRadius: 999,
+        background: "#FD6827",
+        boxShadow: hover
+          ? "0 16px 40px rgba(253,104,39,.55), 0 0 0 8px rgba(253,104,39,.18)"
+          : "0 12px 28px rgba(0,0,0,.45)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        transition: "transform .2s ease, box-shadow .2s ease",
+      }}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      </span>
+    </button>
+  );
+}
+
+function Eyebrow({ tone = "orange", children, style }) {
+  const colors = { orange: "#FD6827", green: "#2F5C61", light: "#FE9A6B", muted: "#678480" };
+  return (
+    <div style={{
+      fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase",
+      color: colors[tone], fontWeight: 700, fontFamily: "var(--font-body)",
+      ...style,
+    }}>{children}</div>
+  );
+}
+
+function HandDrawnDeco({ opacity = 0.22, color = "#678480", strokeWidth = 2, variant = "scatter" }) {
+  if (variant === "left") {
+    return (
+      <svg viewBox="0 0 400 600" preserveAspectRatio="xMinYMid slice" aria-hidden="true"
+        style={{ position: "absolute", left: 0, top: 0, width: 400, height: "100%", opacity, pointerEvents: "none" }}>
+        <g fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round">
+          <path d="M-20 80 C 60 40, 120 140, 220 90" />
+          <path d="M-20 130 C 80 100, 140 180, 240 140" />
+          <path d="M-30 200 C 50 240, 130 200, 200 240" />
+          <path d="M-20 360 C 80 320, 160 380, 250 340" />
+          <path d="M-10 480 C 80 520, 180 460, 280 510" />
+          <circle cx="60" cy="80" r="3" fill={color} stroke="none" />
+          <circle cx="180" cy="540" r="3" fill={color} stroke="none" />
+          <path d="M30 250 q 6 -20 18 0 q 6 20 18 0" />
+        </g>
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity, pointerEvents: "none" }}>
+      <g fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round">
+        <path d="M-20 120 C 120 60, 240 180, 380 120 S 600 60, 740 130" />
+        <path d="M60 220 C 180 280, 280 220, 360 260" />
+        <path d="M1080 80 C 1180 140, 1280 90, 1400 150" />
+        <path d="M1180 240 C 1240 280, 1320 260, 1380 300" />
+        <path d="M-20 480 C 120 540, 280 460, 420 510" />
+        <path d="M980 520 C 1100 470, 1220 530, 1380 480" />
+        <path d="M620 460 q 12 -28 24 0 q 12 28 24 0 q 12 -28 24 0" />
+        <circle cx="120" cy="80" r="3" fill={color} stroke="none" />
+        <circle cx="1280" cy="200" r="3" fill={color} stroke="none" />
+        <circle cx="220" cy="540" r="3" fill={color} stroke="none" />
+        <circle cx="900" cy="100" r="3" fill={color} stroke="none" />
+      </g>
+    </svg>
+  );
+}
+
+function NumberCard({ number, label, color = "#FD6827" }) {
+  return (
+    <div style={{
+      background: "#fff", border: "1px solid var(--dcx-rule)",
+      borderRadius: 14, padding: "32px 28px",
+      boxShadow: "0 4px 12px rgba(26,31,34,.06)",
+      position: "relative", overflow: "hidden",
+    }}>
+      <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: color }} />
+      <div style={{
+        fontFamily: "Orbitron, sans-serif", fontWeight: 900,
+        fontSize: 64, lineHeight: 1, color, letterSpacing: "-.02em",
+      }}>{number}</div>
+      <p style={{ margin: "14px 0 0", fontSize: 15, lineHeight: 1.5, color: "var(--fg-2)" }}>{label}</p>
+    </div>
+  );
+}
+
+/* --------------------------------------------------------------- HEADER */
+
+function StickyHeader({ onCta }) {
+  const goTo = (sel) => {
+    const el = document.querySelector(sel);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+  return (
+    <header style={{
+      position: "sticky", top: 0, zIndex: 50,
+      background: "rgba(250,246,240,.94)", backdropFilter: "blur(10px)",
+      WebkitBackdropFilter: "blur(10px)",
+      borderBottom: "1px solid var(--dcx-rule)",
+    }}>
+      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "12px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <a style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", textDecoration: "none" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          <div style={{ width: 36, height: 36, borderRadius: 8, background: "#FD6827", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Orbitron, sans-serif", color: "#2F5C61", fontWeight: 900, fontSize: 12, lineHeight: .95 }}>DCX</div>
+          <div>
+            <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 800, fontSize: 12, color: "var(--dcx-ink)", letterSpacing: ".02em" }}>THE DIGITAL CX</div>
+            <div style={{ fontSize: 9.5, color: "#FD6827", letterSpacing: ".22em", textTransform: "uppercase", fontWeight: 700, marginTop: 1 }}>Masterclass</div>
+          </div>
+        </a>
+        <nav className="nav-links" style={{ display: "flex", gap: 4, alignItems: "center" }}>
+          {[
+            { l: "What's inside", sel: "#offer" },
+            { l: "Pricing", sel: "[data-screen-label^='07']" },
+            { l: "About Alex", sel: "[data-screen-label^='11']" },
+            { l: "FAQ", sel: "[data-screen-label^='12']" },
+          ].map(it => (
+            <a key={it.l} onClick={() => goTo(it.sel)} style={{ cursor: "pointer", padding: "8px 14px", borderRadius: 8, fontSize: 14, fontWeight: 500, color: "var(--fg-2)" }}>{it.l}</a>
+          ))}
+          <Button variant="primary-orange" size="md" onClick={onCta} style={{ marginLeft: 12 }}>Reserve seat →</Button>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+/* ---------------------------------------------------------------- HERO */
+
+function Hero({ onCta }) {
+  return (
+    <section data-screen-label="01 Hero" className="hero-pad" style={{
+      background: "#2F5C61", position: "relative", color: "#fff",
+      padding: "120px 32px 100px", overflow: "hidden",
+    }}>
+      <HandDrawnDeco opacity={0.28} color="#678480" />
+      <div style={{ position: "relative", maxWidth: 1080, margin: "0 auto", textAlign: "center" }}>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 10,
+          padding: "8px 18px", borderRadius: 999,
+          background: "rgba(253,104,39,.14)",
+          border: "1px solid rgba(253,104,39,.5)",
+          color: "#FE9A6B", fontSize: 13, fontWeight: 600,
+          marginBottom: 28, letterSpacing: ".02em",
+        }}>
+          <span style={{ width: 8, height: 8, borderRadius: 999, background: "#FD6827", boxShadow: "0 0 0 4px rgba(253,104,39,.2)" }} />
+          New Cohort begins soon! Seats are limited
+        </div>
+
+        <Eyebrow tone="light" style={{ marginBottom: 18 }}>The Digital CX Masterclass</Eyebrow>
+
+        <h1 className="hero-title" style={{
+          fontFamily: "Orbitron, sans-serif", fontWeight: 900,
+          fontSize: "clamp(44px, 6.4vw, 92px)", lineHeight: 1.0,
+          margin: 0, letterSpacing: "-.015em", color: "#fff",
+          textWrap: "balance",
+        }}>
+          Stop reading <em style={{ fontStyle: "normal", color: "#FD6827" }}>about</em> digital&nbsp;CX.<br/>
+          Start <em style={{ fontStyle: "normal", color: "#FD6827" }}>building</em> it.
+        </h1>
+
+        <div style={{ width: 120, height: 5, background: "#FD6827", margin: "32px auto 28px", borderRadius: 3 }} />
+
+        <p style={{
+          maxWidth: 720, margin: "0 auto", fontSize: 21, lineHeight: 1.5,
+          color: "#DCE4E2", fontWeight: 400,
+        }}>
+          The 6-week cohort program that turns CS and CX professionals into the
+          digital leaders their organizations can't afford to lose.
+        </p>
+        <p style={{
+          maxWidth: 620, margin: "16px auto 0", fontSize: 16, lineHeight: 1.55,
+          color: "#B8C7C4",
+        }}>
+          You don't need another blog post about digital transformation. You need a
+          system, a strategy, and the confidence to execute both.
+        </p>
+
+        <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 44, flexWrap: "wrap" }}>
+          <Button variant="primary-orange" size="xl" onClick={onCta}>Reserve your seat →</Button>
+          <Button variant="secondary-light" size="xl" onClick={() => document.getElementById("offer")?.scrollIntoView({ behavior: "smooth" })}>See what's inside</Button>
+        </div>
+
+        <HeroVideo />
+
+        <div className="stat-grid-4" style={{
+          marginTop: 64, paddingTop: 32,
+          borderTop: "1px solid rgba(255,255,255,.12)",
+          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24,
+          maxWidth: 880, marginLeft: "auto", marginRight: "auto",
+        }}>
+          {[
+            { v: "50+", l: "Resources" },
+            { v: "6 weeks", l: "Live cohort" },
+            { v: "38", l: "Modules" },
+            { v: "10", l: "Seats only" },
+          ].map((p, i) => (
+            <div key={i} style={{ textAlign: "center" }}>
+              <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 800, fontSize: 28, color: "#FD6827", lineHeight: 1 }}>{p.v}</div>
+              <div style={{ fontSize: 12, color: "#B8C7C4", marginTop: 6, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600 }}>{p.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------- PROBLEM AGITATION */
+
+function ProblemAgitation() {
+  return (
+    <section data-screen-label="02 Problem" className="padded-section" style={{
+      background: "var(--dcx-cream)", padding: "120px 32px",
+      position: "relative", overflow: "hidden",
+    }}>
+      <div style={{ maxWidth: 880, margin: "0 auto" }}>
+        <Eyebrow tone="orange">Sound familiar?</Eyebrow>
+        <h2 className="section-title" style={{
+          fontFamily: "var(--font-body)", fontWeight: 800,
+          fontSize: 48, lineHeight: 1.08, letterSpacing: "-0.02em",
+          margin: "16px 0 40px", color: "var(--dcx-ink)",
+          textWrap: "balance",
+        }}>
+          You got the role. Now you're stuck in the same cycle.
+        </h2>
+
+        <div style={{ fontSize: 18, lineHeight: 1.7, color: "var(--fg-1)" }}>
+          <p>Manual check-ins. Spreadsheet tracking. Reactive firefighting. You know there's a better way to run your program, but every time you try to carve out space to build it, another escalation pulls you back in.</p>
+
+          <p>Meanwhile, the industry is moving. AI announcements every week. New tools. New expectations from leadership. And you're sitting there thinking:</p>
+
+          <blockquote style={{
+            margin: "28px 0", padding: "20px 28px",
+            borderLeft: "4px solid #FD6827",
+            background: "#fff", borderRadius: "0 12px 12px 0",
+            fontSize: 22, lineHeight: 1.4, fontWeight: 600,
+            color: "var(--dcx-dark-green)", fontStyle: "italic",
+          }}>
+            "I should be further along by now."
+          </blockquote>
+
+          <p>Maybe you just stepped into a digital CS role and you're realizing nobody handed you a playbook. You're supposed to "build a digital program", but what does that actually mean? Where do you start? How do you structure it? How do you sell it internally? How do you make it actually work for the customer?</p>
+
+          <p>Or maybe you're a senior leader watching your org fall behind. You've got smart people on your team, but they don't have the frameworks to move fast enough. You need them upskilled, and you need it to happen in weeks, not quarters.</p>
+
+          <p>Here's the uncomfortable truth: self-study isn't going to cut it. You can read the two books that exist on this topic. You can listen to podcasts on your commute and hope something sticks. You can go to a conference and sit through one or two digital CX sessions sandwiched between 40 other talks.</p>
+
+          <p style={{ color: "var(--fg-2)" }}>None of that gives you a complete, actionable system.</p>
+        </div>
+
+        <div className="pad-card" style={{
+          marginTop: 64, padding: "48px 56px",
+          background: "var(--dcx-dark-green)", borderRadius: 18,
+          color: "#fff", textAlign: "center",
+          position: "relative", overflow: "hidden",
+        }}>
+          <HandDrawnDeco opacity={0.18} color="#678480" />
+          <div style={{ position: "relative" }}>
+            <div style={{ fontSize: 13, letterSpacing: ".22em", textTransform: "uppercase", color: "#FE9A6B", fontWeight: 700, marginBottom: 18 }}>The diagnosis</div>
+            <p style={{
+              fontFamily: "Orbitron, sans-serif", fontWeight: 700,
+              fontSize: "clamp(26px, 4vw, 40px)", lineHeight: 1.15, margin: 0,
+              letterSpacing: "-.01em", textWrap: "balance",
+            }}>
+              You don't have a knowledge problem.<br/>
+              You have a <span style={{ color: "#FD6827" }}>structure problem</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------- FAILED SOLUTIONS */
+
+function FailedSolutions() {
+  const items = [
+    { title: "Self-study from books and blogs", body: "There are a handful of decent resources out there, but they're scattered, surface-level, and none of them take you from strategy to execution in a single, structured path. You end up with a collection of interesting ideas and no implementation plan.", cost: "Months of reading, no plan" },
+    { title: "Conference sessions", body: "You paid $2,000+ in registration and travel to attend a conference where digital CX got maybe 2-3 breakout sessions out of 50. You took some notes. You came back energized. Two weeks later, nothing changed.", cost: "$2,000+ · 2 weeks of momentum" },
+    { title: "Internal training programs", body: "Your company's L&D team means well, but they're generalists. They don't know the difference between digital CS and scaled CS (most people in the industry still confuse them). The training doesn't go deep enough to be useful.", cost: "Generic, surface-level" },
+    { title: "Copying what someone else did", body: "You read a case study or saw a talk about how Company X built their digital program. You tried to replicate it. It didn't work because their ICP, data maturity, tech stack, and org structure are nothing like yours.", cost: "A pattern, not a system" },
+    { title: "Trial and error", body: "The most expensive approach of all. You're burning months, sometimes years, figuring out through painful iteration what could be learned in weeks with the right framework.", cost: "12-18 months · credibility" },
+  ];
+  return (
+    <section data-screen-label="03 Failed Solutions" className="padded-section" style={{ background: "#fff", padding: "120px 32px" }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <div style={{ maxWidth: 760, marginBottom: 56 }}>
+          <Eyebrow tone="orange">What hasn't worked</Eyebrow>
+          <h2 className="section-title" style={{
+            fontFamily: "var(--font-body)", fontWeight: 800,
+            fontSize: 48, lineHeight: 1.08, letterSpacing: "-0.02em",
+            margin: "16px 0 20px", color: "var(--dcx-ink)", textWrap: "balance",
+          }}>
+            You've tried this before.
+          </h2>
+          <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, color: "var(--fg-2)" }}>
+            If you've been trying to figure out digital CX on your own, you've probably tried some version of these, and watched them all fall short for the same underlying reason.
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+          {items.map((it, i) => (
+            <div key={i} style={{
+              background: "var(--dcx-cream)",
+              border: "1px solid var(--dcx-rule)",
+              borderRadius: 14, padding: "28px 26px",
+              display: "flex", flexDirection: "column", gap: 14,
+              position: "relative",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: "#fff", border: "1px solid var(--dcx-rule)",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  fontFamily: "Orbitron, sans-serif", fontWeight: 800, fontSize: 14,
+                  color: "#678480",
+                }}>0{i+1}</span>
+                <div style={{
+                  fontSize: 11, letterSpacing: ".18em", textTransform: "uppercase",
+                  color: "#B95B2D", fontWeight: 700,
+                }}>✕ Doesn't work</div>
+              </div>
+              <h3 style={{
+                fontFamily: "var(--font-body)", fontWeight: 700,
+                fontSize: 20, lineHeight: 1.25, margin: 0,
+                color: "var(--dcx-ink)",
+              }}>{it.title}</h3>
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "var(--fg-2)" }}>{it.body}</p>
+              <div style={{
+                marginTop: "auto", paddingTop: 14,
+                borderTop: "1px dashed var(--dcx-rule)",
+                fontSize: 12, color: "#B95B2D", fontWeight: 600,
+                letterSpacing: ".04em",
+              }}>The cost: {it.cost}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{
+          marginTop: 56, padding: "36px 40px",
+          borderRadius: 14, background: "var(--dcx-dark-green)",
+          color: "#fff", display: "flex", gap: 24, alignItems: "center",
+          flexWrap: "wrap",
+        }}>
+          <div style={{
+            fontFamily: "Orbitron, sans-serif", fontWeight: 800, fontSize: 22,
+            color: "#FD6827", flexShrink: 0,
+          }}>The pattern:</div>
+          <p style={{ margin: 0, fontSize: 17, lineHeight: 1.5, color: "#DCE4E2", flex: 1, minWidth: 280 }}>
+            Pieces without the picture. Tactics without strategy. Ideas without a system to evaluate, prioritize, and execute them.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------------------------------------- MECHANISM */
+
+function Mechanism({ onCta }) {
+  return (
+    <section data-screen-label="04 Mechanism" className="padded-section" style={{
+      background: "var(--dcx-cream)", padding: "120px 32px",
+      position: "relative", overflow: "hidden",
+    }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto", position: "relative" }}>
+        <div style={{ maxWidth: 760, marginBottom: 56 }}>
+          <Eyebrow tone="green">Why this is different</Eyebrow>
+          <h2 className="section-title" style={{
+            fontFamily: "var(--font-body)", fontWeight: 800,
+            fontSize: 48, lineHeight: 1.08, letterSpacing: "-0.02em",
+            margin: "16px 0 24px", color: "var(--dcx-ink)",
+            textWrap: "balance",
+          }}>
+            I built the resource I wish had existed when I was figuring this out.
+          </h2>
+          <p style={{ fontSize: 18, lineHeight: 1.65, color: "var(--fg-2)", margin: 0 }}>
+            The Digital CX Masterclass exists because I got tired of watching smart people
+            struggle with something that doesn't need to be this hard.
+          </p>
+        </div>
+
+        <div className="grid-2" style={{
+          display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 56,
+          alignItems: "start",
+        }}>
+          <div style={{ fontSize: 17, lineHeight: 1.7, color: "var(--fg-1)" }}>
+            <p style={{ margin: "0 0 18px" }}>
+              I'm <strong>Alex Turkovic</strong>. I've spent the better part of two decades in customer-facing
+              roles, building digital CS programs at SaaS companies serving tens of thousands of customers,
+              and hosting over 100 episodes of <em>The Digital CX Podcast</em> where I've talked to the
+              practitioners actually doing this work.
+            </p>
+            <p style={{ margin: "0 0 18px" }}>
+              Here's what I've learned: the people who succeed at digital CX aren't the ones with the best tools
+              or the biggest budgets. They're the ones with the clearest frameworks and the confidence to
+              execute them.
+            </p>
+            <p style={{ margin: "0 0 18px", fontWeight: 600, color: "var(--dcx-dark-green)" }}>
+              That's what this course gives you.
+            </p>
+            <p style={{ margin: 0, color: "var(--fg-2)" }}>
+              Not theory. Not inspiration. A complete, structured system for building, launching, and
+              scaling a digital customer experience program, built from frameworks I've used in real
+              organizations to deliver real results.
+            </p>
+          </div>
+
+          <div style={{ display: "grid", gap: 16 }}>
+            <div style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#678480", fontWeight: 700 }}>Real results, real programs</div>
+            <NumberCard number="22%" label="Reduction in Time-to-First-Value through structured digital onboarding" color="#FD6827" />
+            <NumberCard number="38%" label="Reduction in support ticket volume through targeted digital education plays" color="#2F5C61" />
+            <NumberCard number="114%" label="Net Revenue Retention among digitally-managed customers (with 97% GRR)" color="#FD6827" />
+          </div>
+        </div>
+
+        <div className="pad-card" style={{
+          marginTop: 96, padding: "64px 56px",
+          background: "var(--dcx-dark-green)", borderRadius: 20,
+          color: "#fff", position: "relative", overflow: "hidden",
+        }}>
+          <HandDrawnDeco opacity={0.18} color="#678480" />
+          <div className="director-grid" style={{ position: "relative", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
+            <div>
+              <Eyebrow tone="light" style={{ marginBottom: 14 }}>The central idea</Eyebrow>
+              <h3 style={{
+                fontFamily: "Orbitron, sans-serif", fontWeight: 800,
+                fontSize: "clamp(36px, 5.5vw, 52px)", lineHeight: 1.05, margin: 0,
+                letterSpacing: "-.015em", color: "#fff",
+              }}>
+                Director <span style={{ color: "#678480" }}>vs.</span><br/>
+                <span style={{ color: "#FD6827" }}>Doer</span>.
+              </h3>
+              <p style={{ margin: "24px 0 0", fontSize: 17, lineHeight: 1.6, color: "#DCE4E2" }}>
+                Most people are still trying to figure out what AI <em>can do</em>. This course teaches
+                you how to <em>direct it</em>. That's a fundamentally different skill, and it's the one
+                that makes you irreplaceable.
+              </p>
+            </div>
+            <div style={{ display: "grid", gap: 14 }}>
+              <div style={{
+                background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.14)",
+                borderRadius: 14, padding: "22px 24px",
+              }}>
+                <div style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#FE9A6B", fontWeight: 700 }}>The Doers</div>
+                <div style={{ fontFamily: "Orbitron, sans-serif", fontSize: 22, fontWeight: 700, margin: "6px 0 8px" }}>AI &amp; automation</div>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#B8C7C4" }}>Execution. Pattern recognition. Data processing. Tireless, fast, scalable.</p>
+              </div>
+              <div style={{
+                background: "#FD6827", borderRadius: 14, padding: "22px 24px",
+                boxShadow: "0 12px 32px rgba(253,104,39,.28)",
+              }}>
+                <div style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#fff", fontWeight: 700, opacity: .9 }}>The Director</div>
+                <div style={{ fontFamily: "Orbitron, sans-serif", fontSize: 22, fontWeight: 700, margin: "6px 0 8px", color: "#fff" }}>You</div>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#fff", opacity: .92 }}>Judgment. Orchestration. Vision. Ethics. Empathy. Strategy.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------- SOCIAL PROOF */
+
+function SocialProof() {
+  const quotes = [
+    { quote: "I've consumed every digital CS resource out there. Alex's frameworks are the first that took me from \"interesting idea\" to \"shipping it Monday.\"", name: "Practitioner Quote 1", title: "VP, Customer Success", company: "[Company TBD]" },
+    { quote: "This is the playbook I wish I'd had three years ago. Saved me from at least two of the wrong-tool decisions I would've made.", name: "Practitioner Quote 2", title: "Director of Digital CS", company: "[Company TBD]" },
+    { quote: "Alex talks like the practitioner he is. No fluff, no consultant-speak, just the actual frameworks that move the metric.", name: "Practitioner Quote 3", title: "Head of CX Operations", company: "[Company TBD]" },
+  ];
+  return (
+    <section data-screen-label="14 Social Proof" className="padded-section" style={{ background: "#fff", padding: "100px 32px" }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <Eyebrow tone="orange">From the community</Eyebrow>
+          <h2 style={{
+            fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 36,
+            margin: "12px 0 0", color: "var(--dcx-ink)", letterSpacing: "-0.015em",
+          }}>What practitioners are saying</h2>
+        </div>
+        <div style={{
+          display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: 20,
+        }}>
+          {quotes.map((q, i) => (
+            <figure key={i} style={{
+              margin: 0, background: "var(--dcx-cream)",
+              borderRadius: 14, padding: "32px 30px",
+              border: "1px solid var(--dcx-rule)",
+              display: "flex", flexDirection: "column", gap: 20,
+            }}>
+              <div style={{ fontSize: 36, lineHeight: 1, color: "#FD6827", fontFamily: "Orbitron, sans-serif", fontWeight: 800 }}>"</div>
+              <blockquote style={{ margin: 0, fontSize: 17, lineHeight: 1.55, color: "var(--dcx-ink)", fontWeight: 500 }}>
+                {q.quote}
+              </blockquote>
+              <figcaption style={{ marginTop: "auto", paddingTop: 16, borderTop: "1px solid var(--dcx-rule)", display: "flex", gap: 12, alignItems: "center" }}>
+                <div style={{ width: 44, height: 44, borderRadius: 999, background: "#DCE4E2", border: "2px solid #FD6827", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#2F5C61", fontSize: 14 }}>
+                  {q.name.split(" ").map(w => w[0]).slice(0,2).join("")}
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: "var(--dcx-ink)" }}>{q.name}</div>
+                  <div style={{ fontSize: 12, color: "var(--fg-3)" }}>{q.title} · {q.company}</div>
+                </div>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <p style={{ textAlign: "center", marginTop: 32, fontSize: 13, color: "var(--fg-3)", fontStyle: "italic" }}>
+          Endorsement quotes, final names &amp; affiliations to be confirmed before launch.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------ CORE OFFER */
+
+function CoreOffer() {
+  const parts = [
+    { n: "01", week: "Week 1", title: "Foundations & Strategy", body: "Nail down definitions, build a segmentation framework that goes beyond ARR tiers, map your program to the Four Pillars of Digital CX, and build a business case that speaks executive language, with the metrics, narrative structure, and P&L model that wins budget and buy-in.", win: "By the end of Week 1, you'll have a segmentation strategy and draft business case you could present to leadership.", icon: "M3 12L12 4L21 12M5 10V20H19V10" },
+    { n: "02", week: "Week 2", title: "Customer Lifecycle & Engagement", body: "Map your customer lifecycle with both customer-facing AND internal actions. Design onboarding plays, expansion triggers, and channel strategies matched to how your customers actually work. Build \"magic moments\" at scale.", win: "Lifecycle map, two onboarding plays, and a channel strategy you can pilot the following week.", icon: "M3 12C5 8 8 6 12 6C16 6 19 8 21 12M3 12C5 16 8 18 12 18C16 18 19 16 21 12" },
+    { n: "03", week: "Week 3", title: "Tools, Data & Automation", body: "Data is the fuel. Learn to clean it, integrate it, and use it. Build a health scoring model, prioritize automation candidates with effort-vs-impact scoring, map your tech stack, and develop vendor evaluation criteria so you stop buying tools you don't need.", win: "Health score v1, automation backlog, and a vendor evaluation rubric.", icon: "M4 6H20M4 12H20M4 18H14" },
+    { n: "04", week: "Week 4", title: "Org Design, Process & Enablement", body: "Design your org structure, build stakeholder alignment with a RACI and cadence plan, create your content pipeline, write SOPs your team will actually follow, and develop a change management playbook that addresses the real fears teams have about digital transformation.", win: "Org chart, RACI, content pipeline, and change-management plan.", icon: "M12 4V20M4 12H20" },
+    { n: "05", week: "Week 5", title: "AI, Ethics & The Future", body: "Graduate from practitioner to AI-empowered leader. Treat AI as a teammate (not just a tool), build prompt operations, navigate ethics and bias, and develop the three defensible human skills that AI can't replicate: Taste, Vision, and Care.", win: "Prompt ops kit, ethics checklist, and your personal Director playbook.", icon: "M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9Z" },
+    { n: "06", week: "Week 6", title: "Implementation & Scaling", body: "Strategy becomes real. Launch your first pilot program using the MVP approach (one segment, one lifecycle stage, two plays). Build an experimentation framework, measurement dashboard, and executive operating rhythm. Capstone: a professional executive readout.", win: "Live pilot, dashboard v1, and a polished executive readout you can present.", icon: "M5 13L9 17L19 7" },
+  ];
+
+  return (
+    <section id="offer" data-screen-label="05 Core Offer" className="padded-section" style={{
+      background: "var(--dcx-cream)", padding: "120px 32px",
+      position: "relative", overflow: "hidden",
+    }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 64, maxWidth: 760, marginLeft: "auto", marginRight: "auto" }}>
+          <Eyebrow tone="orange">What you get</Eyebrow>
+          <h2 className="section-title" style={{
+            fontFamily: "var(--font-body)", fontWeight: 800,
+            fontSize: 56, lineHeight: 1.05, letterSpacing: "-0.02em",
+            margin: "16px 0 0", color: "var(--dcx-ink)", textWrap: "balance",
+          }}>
+            <span style={{ color: "#FD6827" }}>6 Parts.</span>{" "}
+            <span style={{ color: "#2F5C61" }}>38 Modules.</span>{" "}
+            One complete system.
+          </h2>
+          <p style={{ margin: "24px auto 0", fontSize: 19, lineHeight: 1.55, color: "var(--fg-2)", maxWidth: 640 }}>
+            Not a collection of random lessons. A deliberate progression that takes you from
+            strategic foundation to a live, measurable digital CX program.
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
+          {parts.map((p, i) => (
+            <article key={i} style={{
+              background: "#fff", borderRadius: 16, padding: "32px 30px",
+              border: "1px solid var(--dcx-rule)",
+              boxShadow: "0 4px 12px rgba(26,31,34,.06)",
+              display: "flex", flexDirection: "column", gap: 16,
+              position: "relative", overflow: "hidden",
+              transition: "all 200ms cubic-bezier(.2,.8,.2,1)",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(26,31,34,.10)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(26,31,34,.06)"; }}
+            >
+              <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: 80, background: i % 2 === 0 ? "#FD6827" : "#2F5C61", borderBottomLeftRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 28, color: "#fff", letterSpacing: "-.02em" }}>
+                {p.n}
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#678480" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d={p.icon} />
+                </svg>
+                <span style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#678480", fontWeight: 700 }}>{p.week}</span>
+              </div>
+              <h3 style={{
+                fontFamily: "var(--font-body)", fontWeight: 700,
+                fontSize: 24, lineHeight: 1.2, margin: 0,
+                color: "var(--dcx-ink)", letterSpacing: "-0.01em",
+                paddingRight: 60,
+              }}>{p.title}</h3>
+              <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: "var(--fg-2)" }}>{p.body}</p>
+
+              <div style={{
+                marginTop: "auto", paddingTop: 18,
+                borderTop: "1px dashed var(--dcx-rule)",
+                display: "flex", gap: 10, alignItems: "flex-start",
+              }}>
+                <span style={{
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  width: 22, height: 22, borderRadius: 999,
+                  background: "#FD6827", color: "#fff", fontSize: 12, fontWeight: 700,
+                  flexShrink: 0, marginTop: 1,
+                }}>★</span>
+                <div>
+                  <div style={{ fontSize: 11, letterSpacing: ".18em", textTransform: "uppercase", color: "#FD6827", fontWeight: 700, marginBottom: 4 }}>Quick win</div>
+                  <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.5, color: "var(--dcx-ink)", fontStyle: "italic" }}>{p.win}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 80 }}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <Eyebrow tone="green">How it works</Eyebrow>
+            <h3 style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 36, margin: "12px 0 0", color: "var(--dcx-ink)", letterSpacing: "-0.015em" }}>3-4 hours a week. Live, instructor-led.</h3>
+          </div>
+          <div className="grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            {[
+              { t: "Weekly live sessions", v: "90 min", b: "Instruction with 9 other practitioners. Real-time Q&A, peer interaction, and direct access to Alex." },
+              { t: "Office hours", v: "60 min", b: "Dedicated time to bring your specific challenges, get framework feedback, and unstick where you're stuck." },
+              { t: "Worksheet time", v: "60-90 min", b: "The homework isn't busywork. It's the deliverables for your job, done with a system." },
+            ].map((c, i) => (
+              <div key={i} style={{
+                background: "#fff", borderRadius: 14, padding: "28px 28px",
+                border: "1px solid var(--dcx-rule)", textAlign: "left",
+              }}>
+                <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 800, fontSize: 38, color: "#2F5C61", lineHeight: 1, letterSpacing: "-.02em" }}>{c.v}</div>
+                <div style={{ fontSize: 13, color: "#FD6827", letterSpacing: ".18em", textTransform: "uppercase", fontWeight: 700, margin: "12px 0 8px" }}>{c.t}</div>
+                <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "var(--fg-2)" }}>{c.b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------ BONUS STACK */
+
+function BonusStack() {
+  const bonuses = [
+    { n: 1, title: "The Complete Template & Worksheet Suite", value: "$1,000", desc: "50+ templates, worksheets, checklists, and frameworks. Segmentation scorecards. Business case builders. Health score templates. Automation inventory grids. Vendor evaluation frameworks. Executive readout decks. Done for you.", icon: "M9 12H15M9 16H15M9 8H15M5 4H19V20H5Z" },
+    { n: 2, title: "AI Chatbot Coach", value: "$1,000", desc: "A custom AI assistant trained on the entire curriculum AND knowledge from 100+ episodes of The Digital CX Podcast. Stuck on a framework? Ask it. Need a refresher at 10pm Tuesday? It's there.", icon: "M12 2C7 2 3 6 3 11C3 13 4 15 5 16L4 20L8 19C9 19.5 10.5 20 12 20C17 20 21 16 21 11C21 6 17 2 12 2Z" },
+    { n: 3, title: "Custom GPT & Claude Plugin Library", value: "$500", desc: "Purpose-built AI tools for digital CX workflows. Not random prompts from a marketplace. Built specifically for the work you'll be doing.", icon: "M12 4V20M4 12H20M7 7L17 17M17 7L7 17" },
+    { n: 4, title: "90-Day Post-Course Implementation Plan", value: "$1,000", desc: "Breaks down exactly what to do in your first 30, 60, and 90 days after the program. What to launch first, how to measure it, when to iterate, how to communicate progress to leadership.", icon: "M3 6H21M3 12H21M3 18H21" },
+    { n: 5, title: "Digital CX Leader's Swipe File", value: "$500", desc: "Alex's actual email templates, executive presentation frameworks, stakeholder communication scripts, and internal positioning docs from his career. The real documents from real organizations.", icon: "M16 4H8C6 4 4 6 4 8V16C4 18 6 20 8 20H16C18 20 20 18 20 16V8C20 6 18 4 16 4Z" },
+    { n: 6, title: "Digital CX Maturity Assessment (Pre + Post)", value: "$250", desc: "Benchmark where your program stands today across the Four Pillars, then retake it after the course. The delta is your proof of transformation.", icon: "M5 12L10 17L20 7" },
+    { n: 7, title: "Reference Reading Library", value: "$250", desc: "A curated collection of the best articles, research, and case studies, organized by topic. Bundled into the AI Chatbot Coach for conversational search.", icon: "M5 4H19V20L12 16L5 20Z" },
+    { n: 8, title: "Lifetime Community & Content Access", value: "$1,200/yr", desc: "Most programs charge a monthly fee for ongoing access. You get it for life. Updated content, new templates, a network of digital CX practitioners. Your access never expires.", icon: "M12 2L15 9L22 10L17 15L18 22L12 19L6 22L7 15L2 10L9 9Z" },
+    { n: 9, title: "Peer Cohort Network", value: "$2,400/yr", desc: "Your cohort of 10 is your mastermind group. The same material, the same challenges, building alongside you in real time. The relationships outlast the course by years.", icon: "M16 11C18 11 20 9 20 7C20 5 18 3 16 3M8 11C6 11 4 9 4 7C4 5 6 3 8 3M12 12V21" },
+  ];
+  return (
+    <section data-screen-label="06 Bonuses" className="padded-section" style={{ background: "#fff", padding: "120px 32px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 56, maxWidth: 720, marginLeft: "auto", marginRight: "auto" }}>
+          <Eyebrow tone="orange">And there's more</Eyebrow>
+          <h2 className="section-title" style={{
+            fontFamily: "var(--font-body)", fontWeight: 800,
+            fontSize: 48, lineHeight: 1.08, letterSpacing: "-0.02em",
+            margin: "16px 0 16px", color: "var(--dcx-ink)", textWrap: "balance",
+          }}>
+            But you're not just getting the core program.
+          </h2>
+          <p style={{ margin: 0, fontSize: 18, lineHeight: 1.55, color: "var(--fg-2)" }}>
+            Nine bonuses that turn a 6-week program into a multi-year asset.
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))", gap: 20 }}>
+          {bonuses.map((b, i) => (
+            <div key={i} style={{
+              background: "var(--dcx-cream)", borderRadius: 14,
+              padding: "26px 26px", border: "1px solid var(--dcx-rule)",
+              display: "flex", flexDirection: "column", gap: 14,
+              position: "relative",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: 10,
+                    background: "#fff", border: "1px solid var(--dcx-rule)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F5C61" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={b.icon} />
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: 11, letterSpacing: ".18em", textTransform: "uppercase", color: "#678480", fontWeight: 700 }}>Bonus {String(b.n).padStart(2,"0")}</div>
+                </div>
+                <div style={{
+                  display: "inline-flex", alignItems: "center",
+                  padding: "5px 12px", borderRadius: 999,
+                  background: "#FD6827", color: "#fff",
+                  fontSize: 12, fontWeight: 700, letterSpacing: ".02em",
+                  flexShrink: 0, fontFamily: "Orbitron, sans-serif",
+                }}>{b.value}</div>
+              </div>
+              <h3 style={{
+                fontFamily: "var(--font-body)", fontWeight: 700,
+                fontSize: 19, lineHeight: 1.25, margin: 0,
+                color: "var(--dcx-ink)", letterSpacing: "-0.005em",
+              }}>{b.title}</h3>
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "var(--fg-2)" }}>{b.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------------------------------- VALUE STACK + PRICE */
+
+function ValueStack({ onCta }) {
+  const rows = [
+    ["6-Part Digital CX Masterclass (38 modules, live instruction, office hours)", "$2,995"],
+    ["Complete Template & Worksheet Suite (50+ artifacts)", "$1,000"],
+    ["AI Chatbot Coach (trained on course + 100 podcast episodes)", "$1,000"],
+    ["Custom GPT & Claude Plugin Library", "$500"],
+    ["90-Day Post-Course Implementation Plan", "$1,000"],
+    ["Digital CX Leader's Swipe File", "$500"],
+    ["Digital CX Maturity Assessment (Pre + Post)", "$250"],
+    ["Reference Reading Library", "$250"],
+    ["Lifetime Community & Content Access", "$1,200/yr"],
+    ["Peer Cohort Network", "$2,400/yr"],
+  ];
+  return (
+    <section data-screen-label="07 Value Stack" className="padded-section" style={{
+      background: "var(--dcx-dark-green)", padding: "120px 32px",
+      position: "relative", overflow: "hidden", color: "#fff",
+    }}>
+      <HandDrawnDeco opacity={0.16} color="#678480" />
+      <div style={{ position: "relative", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 56 }}>
+          <Eyebrow tone="light">Let's add it up</Eyebrow>
+          <h2 className="section-title" style={{
+            fontFamily: "var(--font-body)", fontWeight: 800,
+            fontSize: 48, lineHeight: 1.08, margin: "16px 0 0",
+            letterSpacing: "-0.02em", color: "#fff", textWrap: "balance",
+          }}>
+            Total value: <span style={{ color: "#FD6827" }}>$9,195+</span>
+          </h2>
+        </div>
+
+        <div style={{
+          background: "rgba(255,255,255,.04)",
+          border: "1px solid rgba(255,255,255,.12)",
+          borderRadius: 16, overflow: "hidden",
+        }}>
+          {rows.map((r, i) => (
+            <div key={i} style={{
+              display: "grid", gridTemplateColumns: "1fr auto",
+              padding: "20px 24px", gap: 24,
+              borderTop: i === 0 ? "none" : "1px solid rgba(255,255,255,.08)",
+              alignItems: "center",
+            }}>
+              <div style={{ fontSize: 15.5, color: "#DCE4E2", lineHeight: 1.45 }}>{r[0]}</div>
+              <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 700, fontSize: 18, color: "#fff", letterSpacing: "-.01em", minWidth: 100, textAlign: "right" }}>{r[1]}</div>
+            </div>
+          ))}
+          <div style={{
+            display: "grid", gridTemplateColumns: "1fr auto",
+            padding: "26px 24px", gap: 24, alignItems: "center",
+            background: "rgba(253,104,39,.10)",
+            borderTop: "1px solid rgba(253,104,39,.4)",
+          }}>
+            <div style={{ fontSize: 17, color: "#fff", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em" }}>Total Value</div>
+            <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 28, color: "#FD6827", letterSpacing: "-.02em" }}>$9,195+</div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 64, textAlign: "center" }}>
+          <div style={{ display: "inline-flex", flexDirection: "column", gap: 12, alignItems: "center", maxWidth: "100%" }}>
+            <div className="price-row" style={{ display: "flex", gap: 28, alignItems: "baseline", flexWrap: "wrap", justifyContent: "center" }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#678480", fontWeight: 700, marginBottom: 4 }}>Total value</div>
+                <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 700, fontSize: 22, color: "#B8C7C4", textDecoration: "line-through" }}>$9,195</div>
+              </div>
+              <div className="price-arrow" style={{ fontSize: 24, color: "#678480" }}>→</div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#678480", fontWeight: 700, marginBottom: 4 }}>Regular price</div>
+                <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 700, fontSize: 32, color: "#DCE4E2", textDecoration: "line-through" }}>$2,995</div>
+              </div>
+              <div className="price-arrow" style={{ fontSize: 24, color: "#678480" }}>→</div>
+              <div style={{
+                textAlign: "center", padding: "14px 32px",
+                background: "#FD6827", borderRadius: 14,
+                boxShadow: "0 16px 40px rgba(253,104,39,.42)",
+              }}>
+                <div style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#fff", fontWeight: 700, marginBottom: 4, opacity: .95 }}>This cohort price</div>
+                <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 56, color: "#fff", letterSpacing: "-.02em", lineHeight: 1 }}>$1,495</div>
+              </div>
+            </div>
+          </div>
+
+          <p style={{ marginTop: 18, fontSize: 14, color: "#FE9A6B", fontWeight: 600, letterSpacing: ".02em" }}>
+            Pay in full or split into 3 monthly payments of $525 — choose at checkout.
+          </p>
+
+          <p style={{ margin: "32px auto 0", maxWidth: 620, fontSize: 17, lineHeight: 1.55, color: "#B8C7C4" }}>
+            Less than one month of a consultant's retainer. Less than sending one person to one
+            conference. Less than the cost of the trial-and-error months you'll skip.
+          </p>
+
+          <div style={{ marginTop: 36 }}>
+            <Button variant="primary-orange" size="xl" onClick={onCta}>
+              Join this cohort for $1,495 (reg. <span style={{ textDecoration: "line-through", opacity: .75, fontWeight: 600 }}>$2,995</span>) →
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------ GUARANTEE */
+
+function Guarantee() {
+  return (
+    <section data-screen-label="08 Guarantee" className="padded-section" style={{
+      background: "var(--dcx-cream)", padding: "120px 32px",
+    }}>
+      <div style={{ maxWidth: 980, margin: "0 auto" }}>
+        <div className="pad-card" style={{
+          background: "#fff", borderRadius: 20,
+          padding: "56px 64px",
+          border: "2px solid var(--dcx-dark-green)",
+          position: "relative",
+          boxShadow: "0 12px 32px rgba(26,31,34,.08)",
+        }}>
+          <div className="guarantee-grid" style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 40, alignItems: "start" }}>
+            <div style={{ flexShrink: 0 }}>
+              <div style={{
+                width: 140, height: 160, position: "relative",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <svg viewBox="0 0 140 160" width="140" height="160" style={{ position: "absolute", inset: 0 }}>
+                  <path d="M70 8 L130 30 L130 90 Q130 130 70 152 Q10 130 10 90 L10 30 Z"
+                    fill="#2F5C61" stroke="#FD6827" strokeWidth="3" />
+                  <path d="M70 14 L124 33 L124 90 Q124 124 70 144 Q16 124 16 90 L16 33 Z"
+                    fill="none" stroke="rgba(255,255,255,.2)" strokeWidth="1" />
+                </svg>
+                <div style={{ position: "relative", textAlign: "center", color: "#fff" }}>
+                  <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 36, lineHeight: 1, color: "#FD6827" }}>2</div>
+                  <div style={{ fontSize: 10, letterSpacing: ".22em", textTransform: "uppercase", fontWeight: 700, color: "#fff", marginTop: 4 }}>Week<br/>Guarantee</div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <Eyebrow tone="green">No hoops. No committee.</Eyebrow>
+              <h2 style={{
+                fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 40,
+                lineHeight: 1.1, letterSpacing: "-0.015em",
+                margin: "12px 0 24px", color: "var(--dcx-ink)",
+              }}>
+                The "Prove It To Me" Guarantee.
+              </h2>
+              <p style={{ margin: "0 0 16px", fontSize: 17, lineHeight: 1.65, color: "var(--fg-1)" }}>
+                Complete Parts 1 and 2. That's two weeks. If by the end of those two weeks you don't have
+                a business case framework and program structure you'd confidently present to your leadership
+                team, email me. I'll give you a full refund.
+              </p>
+              <p style={{ margin: "0 0 16px", fontSize: 17, lineHeight: 1.65, color: "var(--fg-2)" }}>
+                I can offer this because the course is designed to deliver a usable, tangible outcome by
+                the end of the first two weeks. Not the last. If you show up, do the work, and don't
+                walk away with something you're proud of, I don't want your money.
+              </p>
+              <p style={{ margin: "0", fontSize: 16, fontStyle: "italic", color: "#FD6827", fontWeight: 600 }}>
+                Just an email. Just <a href="mailto:alex@digitalcustomersuccess.com" style={{ textDecoration: "underline", textUnderlineOffset: 4, color: "#FD6827" }}>alex@digitalcustomersuccess.com</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------- SCARCITY */
+
+function Scarcity({ onCta }) {
+  const blocks = [
+    { kicker: "01", title: "10 seats. That's it.", body: "This cohort is intentionally small. This is live, instructor-led, and Alex is personally in every session and every office hours call.", accent: "10 / 10" },
+    { kicker: "02", title: "This price won't exist again.", body: "$1,495 is this cohort's founding price, a $1,500 discount off the regular $2,995. Future cohorts pay full price. There's no \"wait for a sale\" strategy here.", accent: "$1,495 vs. $2,995" },
+    { kicker: "03", title: "The live format changes after this.", body: "Future cohorts shift to hybrid with pre-recorded content. This cohort gets fully live instruction with more flexibility, real-time Q&A, and direct interaction.", accent: "Live · Real-time" },
+    { kicker: "04", title: "The longer you wait, the more it costs.", body: "Not just in dollars. Every month without a structured program is a month of manual work that could be automated, signals that go undetected, and executive conversations where you don't have the narrative.", accent: "Compounding cost" },
+  ];
+  return (
+    <section data-screen-label="09 Scarcity" className="padded-section" style={{ background: "#fff", padding: "120px 32px" }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 56, maxWidth: 720, marginLeft: "auto", marginRight: "auto" }}>
+          <Eyebrow tone="orange">Why now</Eyebrow>
+          <h2 className="section-title" style={{
+            fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 48,
+            lineHeight: 1.08, letterSpacing: "-0.02em",
+            margin: "16px 0 0", color: "var(--dcx-ink)", textWrap: "balance",
+          }}>
+            Why this cohort, and why now.
+          </h2>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
+          {blocks.map((b, i) => (
+            <div key={i} style={{
+              background: i === 0 ? "var(--dcx-dark-green)" : "var(--dcx-cream)",
+              color: i === 0 ? "#fff" : "var(--dcx-ink)",
+              borderRadius: 14, padding: "32px 28px",
+              border: i === 0 ? "1px solid rgba(255,255,255,.14)" : "1px solid var(--dcx-rule)",
+              display: "flex", flexDirection: "column", gap: 16,
+              position: "relative", overflow: "hidden",
+            }}>
+              <div style={{
+                fontFamily: "Orbitron, sans-serif", fontWeight: 900,
+                fontSize: 56, color: i === 0 ? "rgba(253,104,39,.5)" : "#FFE0CF",
+                lineHeight: 1, letterSpacing: "-.04em",
+              }}>{b.kicker}</div>
+              <h3 style={{
+                fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 22,
+                lineHeight: 1.2, margin: 0, color: i === 0 ? "#fff" : "var(--dcx-ink)",
+                letterSpacing: "-.005em",
+              }}>{b.title}</h3>
+              <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, color: i === 0 ? "#DCE4E2" : "var(--fg-2)" }}>{b.body}</p>
+              <div style={{
+                marginTop: "auto", paddingTop: 16,
+                borderTop: i === 0 ? "1px solid rgba(255,255,255,.14)" : "1px dashed var(--dcx-rule)",
+                fontSize: 12, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase",
+                color: i === 0 ? "#FE9A6B" : "#FD6827",
+              }}>{b.accent}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: 48 }}>
+          <Button variant="primary-orange" size="xl" onClick={onCta}>Reserve your seat. Only 10 available →</Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------------------------------------- WHO FOR */
+
+function WhoFor() {
+  const fors = [
+    "You're a CS or CX professional who knows digital transformation is the future and you want to lead it, not react to it.",
+    "You're in a digital CS role (or about to be) and you need a structured system to build a program that works.",
+    "You're a CS leader or executive who wants to fast-track your team's capability instead of waiting 12-18 months for trial and error.",
+    "You're tired of feeling behind on AI and automation and you want a practical framework for directing technology, not just using it.",
+    "You value learning alongside peers who are doing the same work.",
+  ];
+  const nots = [
+    "You're looking for step-by-step AI tool tutorials. This course teaches frameworks for directing AI, not button-click tutorials.",
+    "You want to passively consume content without doing the work. The worksheets are the product.",
+    "You're looking for a quick fix. This requires 3-4 hours per week for 6 weeks.",
+    "You're looking for a certification to hang on your wall. This is a practitioner program. You'll leave with artifacts, not a badge.",
+  ];
+  return (
+    <section data-screen-label="10 Who For" className="padded-section" style={{ background: "var(--dcx-cream)", padding: "120px 32px" }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 56, maxWidth: 720, marginLeft: "auto", marginRight: "auto" }}>
+          <Eyebrow tone="green">Honest fit check</Eyebrow>
+          <h2 className="section-title" style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 48, lineHeight: 1.08, letterSpacing: "-0.02em", margin: "16px 0 0", color: "var(--dcx-ink)" }}>
+            Is this for you?
+          </h2>
+        </div>
+
+        <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+          <div style={{ background: "#fff", borderRadius: 16, padding: "40px 36px", border: "1px solid var(--dcx-rule)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "#2F5C61", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 22 }}>✓</div>
+              <h3 style={{ margin: 0, fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 26, color: "var(--dcx-dark-green)", letterSpacing: "-0.01em" }}>This is for you if…</h3>
+            </div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
+              {fors.map((f, i) => (
+                <li key={i} style={{ display: "flex", gap: 12, fontSize: 15.5, lineHeight: 1.55, color: "var(--fg-1)" }}>
+                  <span style={{ flexShrink: 0, width: 22, height: 22, borderRadius: 999, background: "#DCE4E2", color: "#2F5C61", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, marginTop: 1 }}>✓</span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div style={{ background: "var(--dcx-cream)", borderRadius: 16, padding: "40px 36px", border: "1px dashed #B8C7C4" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "#fff", border: "1px solid var(--dcx-rule)", color: "#B95B2D", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 22 }}>✕</div>
+              <h3 style={{ margin: 0, fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 26, color: "var(--dcx-ink-2)", letterSpacing: "-0.01em" }}>This is NOT for you if…</h3>
+            </div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
+              {nots.map((f, i) => (
+                <li key={i} style={{ display: "flex", gap: 12, fontSize: 15.5, lineHeight: 1.55, color: "var(--fg-2)" }}>
+                  <span style={{ flexShrink: 0, width: 22, height: 22, borderRadius: 999, background: "#fff", border: "1px solid var(--dcx-rule)", color: "#B95B2D", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, marginTop: 1 }}>✕</span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------- ABOUT ALEX */
+
+function AboutAlex() {
+  const credentials = [
+    { v: "100+", l: "Podcast episodes" },
+    { v: "5.0", l: "Spotify & Apple rating" },
+    { v: "#2", l: "FeedSpot Top 25 CS Podcasts" },
+    { v: "#6", l: "Flowla Top 15 CS Podcasts" },
+  ];
+  return (
+    <section data-screen-label="11 About Alex" className="padded-section" style={{ background: "#fff", padding: "120px 32px" }}>
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "0.9fr 1.2fr", gap: 64, alignItems: "start" }}>
+          <div>
+            <div style={{
+              position: "relative", borderRadius: 18, overflow: "hidden",
+              background: "var(--dcx-dark-green)",
+              aspectRatio: "4 / 5",
+              border: "1px solid var(--dcx-rule)",
+              boxShadow: "0 12px 32px rgba(26,31,34,.10)",
+            }}>
+              <img
+                src="assets/alex-headshot.png"
+                alt="Alex Turkovic"
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+              />
+              <div style={{
+                position: "absolute", bottom: 16, left: 16, right: 16,
+                background: "rgba(26,31,34,.72)", backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                borderRadius: 10, padding: "12px 16px",
+                color: "#fff", fontSize: 13,
+                display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8,
+              }}>
+                <span style={{ fontWeight: 700 }}>Alex Turkovic</span>
+                <span style={{ color: "#FE9A6B" }}>Host · Founder · Practitioner</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <Eyebrow tone="orange">Who's teaching this?</Eyebrow>
+            <h2 className="section-title" style={{
+              fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 44,
+              lineHeight: 1.08, letterSpacing: "-0.02em",
+              margin: "14px 0 28px", color: "var(--dcx-ink)",
+            }}>
+              I've been in the weeds. I've built the programs.
+            </h2>
+            <div style={{ fontSize: 16.5, lineHeight: 1.7, color: "var(--fg-1)" }}>
+              <p style={{ margin: "0 0 16px" }}>
+                I'm <strong>Alex Turkovic</strong>. I lead post-sale functions at <strong>Belfry Software</strong> and
+                I've spent my career building customer programs at SaaS companies.
+              </p>
+              <p style={{ margin: "0 0 16px" }}>
+                I host <em>The Digital CX Podcast</em>, a weekly show with over 100 episodes featuring CS practitioners
+                and leaders building digital programs. Rated 5.0 on Spotify and Apple Podcasts. Named to FeedSpot's
+                Top 25 CS Podcasts (#2) and Flowla's Top 15 (#6). SuccessHACKER named me a 2023 Top 25 CS Thought Leader.
+                I speak at Gainsight Pulse Encore, CS Collective, Customer Success Summit, and other industry events.
+              </p>
+              <p style={{ margin: "0 0 16px", color: "var(--fg-2)" }}>
+                But here's the thing that matters more than any of that: I've made the mistakes, taken the bumps, and
+                refined the frameworks over years of doing this work in real orgs with real customers. This course is
+                the collection of everything I've learned, packaged so you can skip the painful parts.
+              </p>
+              <p style={{ margin: 0, fontStyle: "italic", color: "var(--dcx-dark-green)", fontWeight: 600 }}>
+                I built this course because it's the resource I wish existed when I started.
+              </p>
+            </div>
+
+            <div className="credentials-grid" style={{ marginTop: 32, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+              {credentials.map((c, i) => (
+                <div key={i} style={{ background: "var(--dcx-cream)", border: "1px solid var(--dcx-rule)", borderRadius: 10, padding: "14px 14px" }}>
+                  <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 22, color: "#FD6827", lineHeight: 1 }}>{c.v}</div>
+                  <div style={{ fontSize: 11, color: "var(--fg-2)", marginTop: 6, lineHeight: 1.35 }}>{c.l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ FAQ */
+
+function FAQ() {
+  const items = [
+    { q: "My company is not a SaaS company. Is this still relevant?", a: "The frameworks are built from SaaS experience, but customer success principles transcend industry. Segmentation, lifecycle mapping, automation, health scoring, stakeholder alignment, executive communication, these are universal. If your organization serves customers and wants to scale digital engagement, the frameworks apply." },
+    { q: "I'm an individual contributor, not a leader. Is this too advanced?", a: "No. The course serves both current leaders AND ambitious ICs who want to move into leadership. If you're an IC, this gives you the strategic frameworks and vocabulary that will differentiate you when leadership opportunities come, and they will come, because digital CS is one of the fastest career accelerators in the function." },
+    { q: "What if my company won't pay for it?", a: "$1,495 (or 3 monthly payments of $525) is less than most companies spend sending one person to one conference. Frame this as professional development that directly accelerates the digital CX program your company is trying to build. We can provide a justification template to help you make the case. And if cash flow is the issue, the 3-payment plan ($525 × 3 months) makes it easy to expense across two quarters or split between L&D and team budgets." },
+    { q: "I'm already swamped. How do I fit this in?", a: "3-4 hours per week. The worksheets aren't homework on top of your job. They ARE the frameworks, plans, and strategies you need to build for your job. You're not adding work, you're doing your work with better tools and structure." },
+    { q: "What if I can't make a live session?", a: "Sessions will be recorded and available to you. You'll get the most value from attending live, but you won't fall behind if you miss one." },
+    { q: "How is this different from other CS courses or certifications?", a: "Most CS education is broad, covering the entire function at surface level. This goes deep on one specific, high-demand discipline: digital CX. There is no other program that takes you from strategy to execution across segmentation, lifecycle design, automation, AI integration, org design, and executive communication in a single structured curriculum." },
+    { q: "Will this be outdated given how fast AI is moving?", a: "The course deliberately avoids tool-specific tutorials for exactly this reason. It teaches frameworks for evaluating, directing, and integrating AI tools, whatever they are. The Director vs. Doer framework, the Four Pillars, the segmentation and lifecycle methodologies: these are durable. Plus, lifetime content access means you always have the latest updates." },
+  ];
+  const [open, setOpen] = useState(0);
+
+  return (
+    <section data-screen-label="12 FAQ" className="padded-section" style={{ background: "var(--dcx-cream)", padding: "120px 32px" }}>
+      <div style={{ maxWidth: 980, margin: "0 auto" }}>
+        <div style={{ marginBottom: 48 }}>
+          <Eyebrow tone="orange">Questions you probably have</Eyebrow>
+          <h2 className="section-title" style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: 48, lineHeight: 1.08, letterSpacing: "-0.02em", margin: "16px 0 0", color: "var(--dcx-ink)" }}>
+            Frequently asked.
+          </h2>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {items.map((it, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={i} style={{
+                background: "#fff", borderRadius: 12,
+                border: `1px solid ${isOpen ? "#FD6827" : "var(--dcx-rule)"}`,
+                overflow: "hidden",
+                transition: "border-color 200ms",
+              }}>
+                <button
+                  onClick={() => setOpen(isOpen ? -1 : i)}
+                  style={{
+                    width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                    gap: 24, padding: "22px 28px", background: "transparent", border: "none",
+                    cursor: "pointer", fontFamily: "var(--font-body)", fontWeight: 600,
+                    fontSize: 17, color: "var(--dcx-ink)", textAlign: "left", letterSpacing: "-0.005em",
+                  }}>
+                  <span>{it.q}</span>
+                  <span style={{
+                    width: 32, height: 32, borderRadius: 999, flexShrink: 0,
+                    background: isOpen ? "#FD6827" : "var(--dcx-cream)",
+                    color: isOpen ? "#fff" : "#2F5C61",
+                    display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 18, fontWeight: 700,
+                    transition: "all 200ms",
+                    transform: isOpen ? "rotate(45deg)" : "rotate(0)",
+                  }}>+</span>
+                </button>
+                {isOpen && (
+                  <div style={{ padding: "0 28px 24px", fontSize: 15.5, lineHeight: 1.65, color: "var(--fg-2)", maxWidth: 780 }}>
+                    {it.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------- FINAL CTA */
+
+function FinalCTA({ onCta }) {
+  return (
+    <section data-screen-label="13 Final CTA" className="padded-section" style={{
+      background: "var(--dcx-dark-green)", padding: "140px 32px",
+      position: "relative", overflow: "hidden", color: "#fff",
+    }}>
+      <HandDrawnDeco opacity={0.22} color="#678480" />
+      <div style={{ position: "relative", maxWidth: 1080, margin: "0 auto", textAlign: "center" }}>
+        <Eyebrow tone="light">Decision time</Eyebrow>
+        <h2 className="section-title" style={{
+          fontFamily: "Orbitron, sans-serif", fontWeight: 900,
+          fontSize: "clamp(44px, 6vw, 84px)", lineHeight: 1.0,
+          margin: "20px 0 32px", color: "#fff", letterSpacing: "-.015em",
+          textWrap: "balance",
+        }}>
+          Here's where <span style={{ color: "#FD6827" }}>you decide</span>.
+        </h2>
+
+        <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "left", fontSize: 18, lineHeight: 1.65, color: "#DCE4E2" }}>
+          <p>
+            You can keep doing what you've been doing. Reading blogs. Attending the occasional conference
+            session. Trying to piece together a digital CX program from scattered resources and trial and error.
+          </p>
+          <p style={{ marginTop: 18 }}>
+            Or you can spend 6 weeks with 9 other professionals and walk out with a complete framework, a
+            portfolio of ready-to-use tools, and the confidence to lead your digital CX program like someone
+            who's been doing this for years.
+          </p>
+        </div>
+
+        <div className="recap-grid" style={{
+          marginTop: 48,
+          background: "rgba(255,255,255,.05)",
+          border: "1px solid rgba(255,255,255,.14)",
+          borderRadius: 16, padding: "28px 32px",
+          display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24,
+          maxWidth: 880, marginLeft: "auto", marginRight: "auto",
+        }}>
+          {[
+            { v: "10", l: "seats" },
+            { v: "$1,495", l: "This cohort (reg. $2,995)" },
+            { v: "2-week", l: "money-back guarantee" },
+          ].map((p, i) => (
+            <div key={i} style={{ textAlign: "center", borderLeft: i > 0 ? "1px solid rgba(255,255,255,.12)" : "none" }}>
+              <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 900, fontSize: 36, color: "#FD6827", lineHeight: 1, letterSpacing: "-.02em" }}>{p.v}</div>
+              <div style={{ fontSize: 12, color: "#B8C7C4", marginTop: 8, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600 }}>{p.l}</div>
+            </div>
+          ))}
+        </div>
+
+        <p style={{
+          margin: "40px auto 0", maxWidth: 720, fontSize: 16, lineHeight: 1.55,
+          color: "#B8C7C4",
+        }}>
+          The frameworks in this course have driven <strong style={{ color: "#FD6827" }}>22%</strong> faster
+          time-to-value, <strong style={{ color: "#FD6827" }}>38%</strong> fewer support tickets, and{" "}
+          <strong style={{ color: "#FD6827" }}>114%</strong> net revenue retention in real programs.{" "}
+          <span style={{ color: "#fff", fontStyle: "italic" }}>Now it's your turn.</span>
+        </p>
+
+        <div style={{ marginTop: 44 }}>
+          <Button variant="primary-orange" size="xl" onClick={onCta}>
+            Join The Digital CX Masterclass: This Cohort →
+          </Button>
+        </div>
+        <p style={{ marginTop: 18, fontSize: 13, color: "#678480", letterSpacing: ".02em" }}>
+          New Cohort begins soon! Seats are limited · This price will not be offered again
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* --------------------------------------------------------------- FOOTER */
+
+function Footer() {
+  return (
+    <footer style={{ background: "#1A1F22", color: "#DCE4E2", padding: "56px 32px 32px" }}>
+      <div className="footer-grid" style={{ maxWidth: 1180, margin: "0 auto", display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 48 }}>
+        <div>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 10, background: "#FD6827", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Orbitron, sans-serif", color: "#2F5C61", fontWeight: 900, fontSize: 14, lineHeight: .95 }}>DCX</div>
+            <div>
+              <div style={{ fontFamily: "Orbitron, sans-serif", fontWeight: 800, fontSize: 14, color: "#fff", letterSpacing: ".02em" }}>THE DIGITAL CX</div>
+              <div style={{ fontSize: 11, color: "#FE9A6B", letterSpacing: ".22em", textTransform: "uppercase", fontWeight: 700, marginTop: 2 }}>Masterclass</div>
+            </div>
+          </div>
+          <p style={{ marginTop: 18, fontSize: 13.5, lineHeight: 1.6, color: "#B8C7C4", maxWidth: 360 }}>
+            Practitioner talking to practitioners. Real and in-depth conversations and frameworks
+            for the people actually building digital and scaled customer experiences.
+          </p>
+          <p style={{ marginTop: 16, fontSize: 12, color: "#678480", fontStyle: "italic" }}>
+            Keep fighting the good digital fight.
+          </p>
+        </div>
+        <div>
+          <h5 style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#678480", margin: "0 0 14px", fontWeight: 700 }}>Products</h5>
+          {["The Podcast","The Newsletter","The Masterclass","Maturity Assessment"].map(x => (
+            <a key={x} style={{ display: "block", padding: "5px 0", fontSize: 13, color: "#DCE4E2", textDecoration: "none", cursor: "pointer" }}>{x}</a>
+          ))}
+        </div>
+        <div>
+          <h5 style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: "#678480", margin: "0 0 14px", fontWeight: 700 }}>Connect</h5>
+          {[
+            { label: "alex@digitalcustomersuccess.com", href: "mailto:alex@digitalcustomersuccess.com" },
+            { label: "LinkedIn", href: "#" },
+            { label: "Sponsor an episode", href: "#" },
+            { label: "Be a guest", href: "#" },
+          ].map(x => (
+            <a key={x.label} href={x.href} style={{ display: "block", padding: "5px 0", fontSize: 13, color: "#DCE4E2", textDecoration: "none", cursor: "pointer" }}>{x.label}</a>
+          ))}
+        </div>
+      </div>
+      <div style={{ maxWidth: 1180, margin: "32px auto 0", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.08)", display: "flex", justifyContent: "space-between", fontSize: 12, color: "#678480", flexWrap: "wrap", gap: 12 }}>
+        <span>© 2026 Digital Customer Success / Servus Enterprises LLC</span>
+        <span>Questions? <a href="mailto:alex@digitalcustomersuccess.com" style={{ color: "#678480" }}>alex@digitalcustomersuccess.com</a></span>
+      </div>
+    </footer>
+  );
+}
+
+/* ----------------------------------------------------- FLOATING CTA CARD */
+
+function FloatingCta({ onCta }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 600);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!visible) return null;
+  return (
+    <div style={{
+      position: "fixed", bottom: 24, right: 24, zIndex: 40,
+      background: "#fff", borderRadius: 14,
+      boxShadow: "0 12px 32px rgba(26,31,34,.18)",
+      padding: 14, display: "flex", gap: 12, alignItems: "center",
+      border: "1px solid var(--dcx-rule)", maxWidth: 360,
+      animation: "fadeUp 320ms cubic-bezier(.2,.8,.2,1)",
+    }}>
+      <div style={{ width: 8, height: 8, borderRadius: 999, background: "#FD6827", boxShadow: "0 0 0 4px rgba(253,104,39,.2)", flexShrink: 0 }} />
+      <div style={{ fontSize: 12.5, lineHeight: 1.4, color: "var(--fg-2)", flex: 1 }}>
+        <strong style={{ color: "var(--dcx-ink)" }}>This cohort · 10 seats</strong><br/>
+        Begins soon · $1,495
+      </div>
+      <Button variant="primary-orange" size="md" onClick={onCta}>Reserve →</Button>
+    </div>
+  );
+}
+
+/* --------------------------------------------------------------- APP */
+
+function App() {
+  const handleCta = () => {
+    window.open("https://learning.digitalcustomersuccess.com/bundles/the-digital-cx-masterclass", "_blank", "noopener,noreferrer");
+  };
+  return (
+    <Fragment>
+      <StickyHeader onCta={handleCta} />
+      <Hero onCta={handleCta} />
+      <ProblemAgitation />
+      <FailedSolutions />
+      <Mechanism onCta={handleCta} />
+      {/* <SocialProof /> — temporarily hidden; re-surface later */}
+      <CoreOffer />
+      <BonusStack />
+      <ValueStack onCta={handleCta} />
+      <Guarantee />
+      <Scarcity onCta={handleCta} />
+      <WhoFor />
+      <AboutAlex />
+      <FAQ />
+      <FinalCTA onCta={handleCta} />
+      <Footer />
+      <FloatingCta onCta={handleCta} />
+    </Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+<style>
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+</body>
+</html>

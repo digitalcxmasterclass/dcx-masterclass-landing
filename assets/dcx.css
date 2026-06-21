@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Digital CX (DCX) — Colors & Typography
+   Source: DCX_Brand_Styleguide.pdf v4.0
+   ========================================================================== */
+
+/* Body type — Montserrat (brand-supplied variable font files) */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('fonts/Montserrat-VariableFont_wght.ttf') format('truetype-variations'),
+       url('fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: url('fonts/Montserrat-Italic-VariableFont_wght.ttf') format('truetype-variations'),
+       url('fonts/Montserrat-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+/* Display type — Orbitron is a closest-match substitute for Efour Digital Pro
+   (a proprietary Canva-only display face). FLAG: replace with the real Efour
+   Digital Pro file when available. The real wordmark uses retro-techno geometric
+   forms with rounded terminals — Orbitron approximates this. */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
+
+:root {
+  /* ----- Brand colors (per styleguide §Color Palette) -------------------- */
+  --dcx-orange:        #FD6827;   /* Primary · Podcast & Newsletter */
+  --dcx-dark-green:    #2F5C61;   /* Secondary · Masterclass primary */
+  --dcx-light-green:   #678480;   /* Accent across all properties */
+
+  /* Tints & shades, derived (used for hovers, surfaces, dividers) */
+  --dcx-orange-700:    #D24F12;
+  --dcx-orange-300:    #FE9A6B;
+  --dcx-orange-100:    #FFE0CF;
+  --dcx-dark-green-700:#22454A;
+  --dcx-dark-green-300:#5A858A;
+  --dcx-light-green-200:#B8C7C4;
+  --dcx-light-green-100:#DCE4E2;
+
+  /* Neutrals — warm so they sit comfortably with the orange */
+  --dcx-ink:           #1A1F22;   /* near-black; body on cream */
+  --dcx-ink-2:         #3A4448;   /* secondary text */
+  --dcx-ink-3:         #6B767A;   /* tertiary / metadata */
+  --dcx-cream:         #FAF6F0;   /* warm off-white surface */
+  --dcx-paper:         #FFFFFF;
+  --dcx-rule:          #E6E1D8;   /* hairline dividers on cream */
+  --dcx-rule-on-dark:  rgba(255,255,255,0.14);
+
+  /* Semantic FG/BG (light mode default) */
+  --fg-1: var(--dcx-ink);
+  --fg-2: var(--dcx-ink-2);
+  --fg-3: var(--dcx-ink-3);
+  --fg-on-orange:    #FFFFFF;
+  --fg-on-dark-green:#FFFFFF;
+  --bg-1: var(--dcx-paper);
+  --bg-2: var(--dcx-cream);
+  --bg-dark: var(--dcx-dark-green);
+
+  /* States */
+  --state-hover-tint:  rgba(26,31,34,0.06);
+  --state-press-tint:  rgba(26,31,34,0.10);
+  --state-focus-ring:  var(--dcx-orange);
+
+  /* ----- Type families --------------------------------------------------- */
+  --font-display: 'Orbitron', 'Efour Digital Pro', 'Bebas Neue', system-ui, sans-serif;
+  --font-body:    'Montserrat', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ----- Type scale (per styleguide §Type Scale, mapped pt→px @ 1.333) --- */
+  --fs-display-l: 64px;   /* 48pt */
+  --fs-display-m: 44px;   /* 32pt */
+  --fs-h1:        32px;   /* 24pt */
+  --fs-h2:        24px;   /* 18pt */
+  --fs-h3:        19px;   /* 14pt */
+  --fs-body:      16px;   /* 11pt baseline → 16 for screen */
+  --fs-small:     13px;   /* 9pt */
+  --fs-eyebrow:   12px;   /* 8.5pt — letter-spaced */
+
+  --lh-tight:   1.05;
+  --lh-snug:    1.2;
+  --lh-normal:  1.45;
+  --lh-relaxed: 1.6;
+
+  /* ----- Spacing (4px base) --------------------------------------------- */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  24px;
+  --sp-6:  32px;
+  --sp-7:  48px;
+  --sp-8:  64px;
+  --sp-9:  96px;
+
+  /* ----- Radii — soft, not chunky --------------------------------------- */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  /* ----- Shadows — restrained, warm ------------------------------------- */
+  --shadow-1: 0 1px 2px rgba(26,31,34,0.06), 0 1px 1px rgba(26,31,34,0.04);
+  --shadow-2: 0 4px 12px rgba(26,31,34,0.08), 0 1px 2px rgba(26,31,34,0.04);
+  --shadow-3: 0 12px 32px rgba(26,31,34,0.14), 0 2px 6px rgba(26,31,34,0.06);
+  --shadow-orange: 0 8px 24px rgba(253,104,39,0.28);
+  --shadow-green:  0 8px 24px rgba(47,92,97,0.24);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:   120ms;
+  --dur-base:   200ms;
+  --dur-slow:   360ms;
+}
+
+/* ==========================================================================
+   Semantic typographic classes — drop these on any element
+   ========================================================================== */
+.dcx-display-l, h1.dcx-display, .dcx-cover-headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-display-l);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+}
+.dcx-display-m {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-display-m);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.005em;
+}
+h1, .dcx-h1 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+}
+h2, .dcx-h2 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+}
+h3, .dcx-h3 {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+}
+p, .dcx-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-1);
+  text-wrap: pretty;
+}
+.dcx-small, small {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+  color: var(--fg-2);
+}
+.dcx-eyebrow {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dcx-orange);
+}
+.dcx-eyebrow--green { color: var(--dcx-dark-green); }
+.dcx-eyebrow--muted { color: var(--fg-3); }
+
+code, .dcx-mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* Selection in brand color */
+::selection { background: var(--dcx-orange); color: #fff; }
